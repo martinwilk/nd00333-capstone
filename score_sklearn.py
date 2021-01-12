@@ -9,9 +9,9 @@ def init():
     model_path = os.path.join(os.getenv('AZUREML_MODEL_DIR'), 'wine_hyperdrive.joblib')
     model = joblib.load(model_path)
 
-def run(data):
+def run(raw_data):
     try:
-        data = np.array(json.loads(data)["data"])
+        data = np.array(json.loads(raw_data)["data"])
         result = model.predict(data)
         # You can return any data type, as long as it is JSON serializable.
         return result.tolist()
