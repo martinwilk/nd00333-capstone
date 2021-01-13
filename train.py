@@ -70,11 +70,11 @@ def main():
                           learning_rate=args.learning_rate)
     model.fit(x_train, y_train)
     y_pred=model.predict_proba(x_test)
-    auc = roc_auc_score(y_test, y_pred, average="weighted", multi_class="ovr")
+    auc = roc_auc_score(y_test, y_pred, average="macro", multi_class="ovr")
 
     os.makedirs("./outputs", exist_ok=True)
     joblib.dump(model, filename="./outputs/wine_hyperdrive.joblib")
-    run.log("AUC_weighted", np.float(auc))
+    run.log("AUC_macro", np.float(auc))
 
 if __name__ == '__main__':
     main()
