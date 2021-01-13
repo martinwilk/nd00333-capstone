@@ -51,14 +51,12 @@ def main():
 
     parser.add_argument("--max_depth", type=int, default=6, help="Maximum depth of tree")
     parser.add_argument("--alpha", type=float, default=0, help="L1 regularization")
-    parser.add_argument("--l2reg", type=float, default=1, help="L2 regularization")
     parser.add_argument("--learning_rate", type=float, default=0.1, help="learning rate")
 
     args = parser.parse_args()
 
     run.log("Max Depth:", np.int(args.max_depth))
     run.log("Alpha:", np.float(args.alpha))
-    run.log("Lambda:", np.float(args.l2reg))
     run.log("Learning rate:", np.float(args.learning_rate))
 
 
@@ -69,7 +67,6 @@ def main():
                           n_estimators=250,
                           max_depth=args.max_depth,
                           reg_alpha=args.alpha,
-                          reg_lambda=args.l2reg,
                           learning_rate=args.learning_rate)
     model.fit(x_train, y_train)
     y_pred=model.predict_proba(x_test)
