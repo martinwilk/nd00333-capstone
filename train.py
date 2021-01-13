@@ -3,16 +3,18 @@ import argparse
 import os
 import numpy as np
 from sklearn.metrics import roc_auc_score
-from sklearn.externals import joblib
+import joblib
 from sklearn.model_selection import train_test_split
 import pandas as pd
 from azureml.core.run import Run
 from azureml.data.dataset_factory import TabularDatasetFactory
+from azureml.core import Workspace
 
 # Data is located at:
 # "https://automlsamplenotebookdata.blob.core.windows.net/automl-sample-notebook-data/bankmarketing_train.csv"
 
 run = Run.get_context()
+ws = Workspace.from_config()
 
 def clean_data(white_data, red_data, numeric_target=True):
 
@@ -31,11 +33,28 @@ def clean_data(white_data, red_data, numeric_target=True):
     return x_df, y_df
 
 
-url_white = "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv"
-url_red = "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv"
-white_data = TabularDatasetFactory.from_delimited_files(url_white)
-red_data = TabularDatasetFactory.from_delimited_files(url_red)
-features, target = clean_data(white_data, red_data)
+found = False
+key = "wine-quality"
+description_text = "Wine Quality Dataset for Udacity Course 3"
+
+if key in ws.datasets.keys():
+    found = True
+    input_data = ws.datasets[key]
+    features = input_data.to_pandas_dataframe()
+    target = features.pop("quality")
+
+if not found:
+    # Create AML Dataset and register it into Workspace
+    url_white = "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv"
+    url_red = "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv"
+    white_data = TabularDatasetFactory.from_delimited_files(url_white)
+    red_data = TabularDatasetFactory.from_delimited_files(url_red)
+    features, target = clean_data(white_data, red_data)
+    features["quality"]=target
+    ds = ws.get_default_datastore()
+    input_data = TabularDatasetFactory.register_pandas_dataframe(dataframe=features, target=ds, name=key,
+    features.drop(["quality"], inplace=True)                                                         description=description_text)
+
 x_train, x_test, y_train, y_test = train_test_split(features, target, random_state=0)
 
 
