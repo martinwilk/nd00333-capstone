@@ -1,20 +1,20 @@
 import json
-import numpy as np
-import os
 import joblib
+import numpy as np
+from azureml.core.model import Model
 
-
+# Called when the service is loaded
 def init():
     global model
-    model_path = os.path.join(os.getenv('AZUREML_MODEL_DIR'), 'wine-quality-model.pkl')
+    # Get the path to the registered model file and load it
+    model_path = Model.get_model_path('wine-quality-model')
     model = joblib.load(model_path)
 
-def run(data):
-    try:
-        data = np.array(json.loads(data)["data"])
-        result = model.predict(data)
-        # You can return any data type, as long as it is JSON serializable.
-        return result.tolist()
-    except Exception as e:
-        error = str(e)
-        return error
+# Called when a request is received
+def run(raw_data):
+    # Get the input data as a numpy array
+    data = np.array(json.loads(raw_data)['data'])
+    # Get a prediction from the model
+    predictions = model.predict(data)
+    # Return the predictions as any JSON serializable format
+    return predictions.tolist()
