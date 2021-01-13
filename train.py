@@ -70,7 +70,7 @@ def main():
                           learning_rate=args.learning_rate)
     model.fit(x_train, y_train)
     y_pred=model.predict_proba(x_test)
-    auc = roc_auc_score(y_test, y_pred, average="macro", multi_class="ovr")
+    auc = roc_auc_score(y_test, y_pred, average="macro", multi_class="ovo")
 
     os.makedirs("./outputs", exist_ok=True)
     joblib.dump(model, filename="./outputs/wine_hyperdrive.joblib")
