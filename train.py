@@ -20,7 +20,6 @@ def clean_data(white_data, red_data, numeric_target=True):
     # Clean and one hot encode data
     x_white = white_data.to_pandas_dataframe().dropna()
     x_red = red_data.to_pandas_dataframe().dropna()
-    print(list(x_white.columns))
     x_white["wine_type"] = "WHITE"
     x_red["wine_type"] = "RED"
     x_df = pd.concat([x_white, x_red])
@@ -51,26 +50,24 @@ def main():
 
 
     parser.add_argument("--max_depth", type=int, default=6, help="Maximum depth of tree")
-    parser.add_argument("--gamma", type=float, default=0, help="minimum loss reduction for split")
-    parser.add_argument("--learning_rate", type=float, default=0.1, help="learning rate")
     parser.add_argument("--alpha", type=float, default=0, help="L1 regularization")
     parser.add_argument("--l2reg", type=float, default=1, help="L2 regularization")
+    parser.add_argument("--learning_rate", type=float, default=0.1, help="learning rate")
 
     args = parser.parse_args()
 
     run.log("Max Depth:", np.int(args.max_depth))
-    run.log("Gamma:", np.float(args.gamma))
-    run.log("Learning Rate:", np.float(args.learning_rate))
     run.log("Alpha:", np.float(args.alpha))
     run.log("Lambda:", np.float(args.l2reg))
+    run.log("Learning rate:", np.float(args.learning_rate))
 
 
     model = XGBClassifier(booster="gbtree",
                           objective="multi:softmax",
+                          subsample=0.6,
                           tree_method="auto",
-                          n_estimators=500,
+                          n_estimators=250,
                           max_depth=args.max_depth,
-                          gamma=args.gamma,
                           reg_alpha=args.alpha,
                           reg_lambda=args.l2reg,
                           learning_rate=args.learning_rate)
