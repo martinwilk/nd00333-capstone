@@ -19,8 +19,8 @@ def clean_data(white_data, red_data, numeric_target=True):
     # Clean and one hot encode data
     x_white = white_data.to_pandas_dataframe().dropna()
     x_red = red_data.to_pandas_dataframe().dropna()
-    x_white["wine_type"] = "WHITE"
-    x_red["wine_type"] = "RED"
+    x_white.loc[:,"wine_type"] = "WHITE"
+    x_red.loc[:,"wine_type"] = "RED"
     x_df = pd.concat([x_white, x_red])
     x_df["is_red_wine"]=x_df.pop("wine_type").apply(lambda s: 1 if s=="RED" else 0)
     if numeric_target:
