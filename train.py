@@ -11,7 +11,7 @@ from azureml.data.dataset_factory import TabularDatasetFactory
 
 
 
- 
+
 
 
 def clean_data(white_data, red_data):
@@ -37,7 +37,7 @@ def main():
     key = "wine-quality"
     description_text = "Wine Quality Dataset for Udacity Course 3"
 
-    if key in ws.datasets.keys(): 
+    if key in ws.datasets.keys():
         found = True
         input_data = ws.datasets[key]
         features = input_data.to_pandas_dataframe()
@@ -65,22 +65,25 @@ def main():
     parser.add_argument("--max_depth", type=int, default=6, help="Maximum depth of tree")
     parser.add_argument("--alpha", type=float, default=0, help="L1 regularization")
     parser.add_argument("--learning_rate", type=float, default=0.1, help="learning rate")
+    parser.add_argument("--gamma", type=float, default=0.0, help="minimal loss")
 
     args = parser.parse_args()
 
     run.log("Max Depth:", np.int(args.max_depth))
     run.log("Alpha:", np.float(args.alpha))
     run.log("Learning rate:", np.float(args.learning_rate))
+    run.log("Gamma:", np.float(args.gamma))
 
 
     model = XGBClassifier(booster="gbtree",
                           objective="multi:softmax",
-                          subsample=0.6,
+                          subsample=0.8,
                           tree_method="auto",
-                          n_estimators=250,
+                          n_estimators=500,
                           max_depth=args.max_depth,
                           reg_alpha=args.alpha,
-                          learning_rate=args.learning_rate)
+                          learning_rate=args.learning_rate,
+                          gamma=args.gamma)
     model.fit(x_train, y_train)
     y_pred=model.predict_proba(x_test)
     auc = roc_auc_score(y_test, y_pred, average="weighted", multi_class="ovo", labels=model.classes_)
