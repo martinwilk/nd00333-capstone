@@ -1,6 +1,6 @@
 import json
 import joblib
-import numpy as np
+import pandas as pd
 from azureml.core.model import Model
 
 # Called when the service is loaded
@@ -13,7 +13,7 @@ def init():
 # Called when a request is received
 def run(raw_data):
     # Get the input data as a numpy array
-    data = np.array(json.loads(raw_data)['data'])
+    data = pd.DataFrame.from_dict(json.loads(raw_data)['data'])
     # Get a prediction from the model
     predictions = model.predict(data)
     # Return the predictions as any JSON serializable format
