@@ -8,7 +8,6 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 from azureml.core.run import Run
 from azureml.data.dataset_factory import TabularDatasetFactory
-from azureml.core import Workspace
 
 
 
