@@ -10,8 +10,8 @@ from azureml.core.run import Run
 from azureml.data.dataset_factory import TabularDatasetFactory
 
 
-run = Run.get_context()
-ws = run.experiment.workspace 
+
+ 
 
 
 def clean_data(white_data, red_data):
@@ -27,34 +27,37 @@ def clean_data(white_data, red_data):
     return x_df, y_df
 
 
-found = False
-key = "wine-quality"
-description_text = "Wine Quality Dataset for Udacity Course 3"
 
-if key in ws.datasets.keys(): 
-    found = True
-    input_data = ws.datasets[key]
-    features = input_data.to_pandas_dataframe()
-
-if not found:
-    # Create AML Dataset and register it into Workspace
-    url_white = "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv"
-    url_red = "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv"
-    white_data = TabularDatasetFactory.from_delimited_files(url_white, separator=";")
-    red_data = TabularDatasetFactory.from_delimited_files(url_red, separator=";")
-    features, target = clean_data(white_data, red_data)
-    features["quality"]=target
-    ds = ws.get_default_datastore()
-    input_data = TabularDatasetFactory.register_pandas_dataframe(dataframe=features, target=ds, name=key,
-                                                                 description=description_text)
-
-
-target = features.pop("quality")
-target = target.replace({"BAD": -1, "MEDIUM": 0, "GOOD":1})
-x_train, x_test, y_train, y_test = train_test_split(features, target, random_state=0)
 
 
 def main():
+    run = Run.get_context()
+    ws = run.experiment.workspace
+    found = False
+    key = "wine-quality"
+    description_text = "Wine Quality Dataset for Udacity Course 3"
+
+    if key in ws.datasets.keys(): 
+        found = True
+        input_data = ws.datasets[key]
+        features = input_data.to_pandas_dataframe()
+
+    if not found:
+        # Create AML Dataset and register it into Workspace
+        url_white = "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv"
+        url_red = "https://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv"
+        white_data = TabularDatasetFactory.from_delimited_files(url_white, separator=";")
+        red_data = TabularDatasetFactory.from_delimited_files(url_red, separator=";")
+        features, target = clean_data(white_data, red_data)
+        features["quality"]=target
+        ds = ws.get_default_datastore()
+        input_data = TabularDatasetFactory.register_pandas_dataframe(dataframe=features, target=ds, name=key,
+                                                                        description=description_text)
+
+
+    target = features.pop("quality")
+    target = target.replace({"BAD": -1, "MEDIUM": 0, "GOOD":1})
+    x_train, x_test, y_train, y_test = train_test_split(features, target, random_state=0)
     # Add arguments to script
     parser = argparse.ArgumentParser()
 
