@@ -17,4 +17,4 @@ def run(raw_data):
     # Get a prediction from the model
     predictions = model.predict(data)
     # Return the predictions as any JSON serializable format
-    return predictions.tolist()
+    return {"result": pd.Series(predictions).replace({-1: "BAD", 0:"MEDIUM", 1: "GOOD"}).tolist()}
