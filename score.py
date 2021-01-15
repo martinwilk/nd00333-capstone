@@ -1,6 +1,7 @@
 import json
 import joblib
 import pandas as pd
+import numpy as np
 from azureml.core.model import Model
 from inference_schema.schema_decorators import input_schema, output_schema
 from inference_schema.parameter_types.numpy_parameter_type import NumpyParameterType
