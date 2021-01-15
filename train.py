@@ -86,7 +86,7 @@ def main():
                           gamma=args.gamma)
     model.fit(x_train, y_train)
     y_pred=model.predict_proba(x_test)
-    auc = roc_auc_score(y_test, y_pred, average="weighted", multi_class="ovo", labels=model.classes_)
+    auc = roc_auc_score(y_test, y_pred, average="weighted", multi_class="ovr", labels=model.classes_)
 
     os.makedirs("./outputs", exist_ok=True)
     joblib.dump(model, filename="./outputs/wine-quality-model.pkl")
