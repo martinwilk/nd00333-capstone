@@ -49,7 +49,7 @@ def main():
         white_data = TabularDatasetFactory.from_delimited_files(url_white, separator=";")
         red_data = TabularDatasetFactory.from_delimited_files(url_red, separator=";")
         features, target = clean_data(white_data, red_data)
-        features["quality"]=target
+        features.loc[:,"quality"]=target
         ds = ws.get_default_datastore()
         input_data = TabularDatasetFactory.register_pandas_dataframe(dataframe=features, target=ds, name=key,
                                                                         description=description_text)
