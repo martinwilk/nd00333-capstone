@@ -50,16 +50,16 @@ I chose the XGBoost classification algorithm to perform the outlined task, becau
 Another positive property of XGBoost is its speed.
 
 The XGBoost classification algorithm has many important hyperparameters like the learning rate, sampling size and the parameters for the decision tree like the maximum depth or a lower bound for the loss reduction incurred by a new split of the decision tree. During my experiments, I will optimize the four hyperparameters below:
-|Parameter | description | range |
-|----------|------------ |-------|
-|Maximum Depth | depth of decision tree | random integer between 3 and 8|
-|----------|------------ |-------|
-| alpha | L1 regularization on weights of XGBoost | random between 0.1 and 10 |
-|----------|------------ |-------|
-| Gamma | minimal split loss required for next split| between 0.01 and 5 |
-|----------|------------ |-------|
-| Learning rate | learning rate used to optimize weights | random between 0.05 and 0.25 |
-|----------|------------ |-------|
+|Parameter | description | range | optimal value |
+|----------|------------ |-------|------------ |
+|Maximum Depth | depth of decision tree | random integer between 3 and 8 | 6 |
+|----------|------------ |-------| ----------- |
+| alpha | L1 regularization on weights of XGBoost | random between 0.1 and 10 |1.0 |
+|----------|------------ |-------| ------------ |
+| Gamma | minimal split loss required for next split| between 0.01 and 5 | 0.28 |
+|----------|------------ |-------| ------------- |
+| Learning rate | learning rate used to optimize weights | random between 0.05 and 0.25 | 0.05 |
+|----------|------------ |-------| -------------- |
 
 The maximum depth hyperparameter refers to the maximum depth of the decision trees involved in the algorithm. Gamma is another hyperparameter of a decision tree: a split of a leaf of the decision tree is only performed, if the loss is reduced by gamma by splitting the tree.
 
@@ -70,8 +70,15 @@ The HyperdriveConfig is submitted to a new experiment and the hyperdrive runs ar
 
 ### Results
 *TODO*: What are the results you got with your model? What were the parameters of the model? How could you have improved it?
+The hyperparameter-optimized XGBoost classification model achieves a AUC_weighted metric of 0.84... .The optimal hyperparameters are listed in the table showing information about the hyperparameters being tuned above.
+
+The model performance could be improved by choosing a deep learning model as a classifier and using Hyperdrive to tune the hyperparameters of the deep learning algorithm. Another interesting idea is to use another sampling strategy like RandomParameterSampling or a grid search combined with a Policy like the Bandit-Policy. Policies could be used to cancel runs with a smaller performance compared to the highest performance achieved during this experiment.
+The screenshot below shows the RunDetails widget which displays the state of all runs with their parameters and the performance. You could see that, ...
+
 ![Screenshot Widget HD]()
 ![best_model_run_hd]()
+In the screenshot above the RunId of the best run is displayed. You could find the parameters of the best model in the screenshot below.
+
 *TODO* Remember to provide screenshots of the `RunDetails` widget as well as a screenshot of the best model trained with it's parameters.
 
 ## Model Deployment
