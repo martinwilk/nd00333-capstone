@@ -41,12 +41,32 @@ The classification algorithms involved in the VotingEnsemble are XGBoost, LightG
 ![Screenshot Widget]()
 ![best_model_run]()
 
+An interesting improvement to the project is to enable the training of deep learning models just to test whether they could outperform the VotingEnsemble model. Another room of improvement deliver the parameters blocked models or allowed models or a manual feature engineering on the dataset.
 
 *TODO* Remember to provide screenshots of the `RunDetails` widget as well as a screenshot of the best model trained with it's parameters.
 
 ## Hyperparameter Tuning
-*TODO*: What kind of model did you choose for this experiment and why? Give an overview of the types of parameters and their ranges used for the hyperparameter search
+I chose the XGBoost classification algorithm to perform the outlined task, because these models often have good performance. XGBoost is an abbreviation for eXtreme Gradient Boosting. Gradient Boosting is an ensemble technique. This means that you aggregate the predictions from so-called base learners (here: decision trees). Because of the aggregation of their predictions the error rate will be reduced compared to the error rate from a single decision tree.
+Another positive property of XGBoost is its speed.
 
+The XGBoost classification algorithm has many important hyperparameters like the learning rate, sampling size and the parameters for the decision tree like the maximum depth or a lower bound for the loss reduction incurred by a new split of the decision tree. During my experiments, I will optimize the four hyperparameters below:
+|Parameter | description | range |
+|----------|------------ |-------|
+|Maximum Depth | depth of decision tree | random integer between 3 and 8|
+|----------|------------ |-------|
+| alpha | L1 regularization on weights of XGBoost | random between 0.1 and 10 |
+|----------|------------ |-------|
+| Gamma | minimal split loss required for next split| between 0.01 and 5 |
+|----------|------------ |-------|
+| Learning rate | learning rate used to optimize weights | random between 0.05 and 0.25 |
+|----------|------------ |-------|
+
+The maximum depth hyperparameter refers to the maximum depth of the decision trees involved in the algorithm. Gamma is another hyperparameter of a decision tree: a split of a leaf of the decision tree is only performed, if the loss is reduced by gamma by splitting the tree.
+
+The next hyperparameter I would like to optimize is alpha, which provides a L1 regularization to the weights. This regularization of the weights is used to prevent overfitting. Another important parameter I will use is the learning rate. The learning rate is a parameter used in the optimization problem to find the right weights for the ensemble learner.
+
+I use BayesianParameterSampling in my experiments because BayesianParameterSampling is able to learn from prior runs which could lead to better hyperparameters. Because I use this sampling strategy a Policy to cancel runs is not required. I use AUC_weighted as a metric to evaluate the performance. To run my train.py script which is used to train my XGBoost model, a SKLearn estimator is used. The estimator object is passed to the HyperdriveConfig object along with a max_total_runs of 80 and a maximum amount of concurrent runs of 5. I chose 80 as the maximum number of runs because if you specify less than 20 * {number of hyperparameters} when using the Bayesian sampling strategy, you will get a warning that you should allow at least 20 * {number of hyperparameters} runs.
+The HyperdriveConfig is submitted to a new experiment and the hyperdrive runs are executed automatically.   
 
 ### Results
 *TODO*: What are the results you got with your model? What were the parameters of the model? How could you have improved it?
@@ -57,7 +77,7 @@ The classification algorithms involved in the VotingEnsemble are XGBoost, LightG
 ## Model Deployment
 The deployed model was created by AutoML. To query the endpoint with a sample input, I used the requests module. The sample input has to be provided as a json serialized dict containing the data under a data key. Each instance is another dict in the array which is the value corresponding to the data key. The sample data is serialized using the dumps method of the json module.
 
-Because I activated authentication for my REST endpoint an authentication header with the string Bearer and the primary key which was created when the endpoint was created has to be included. The URI of the endpoint, the header containing authentication data and the json payload should be passed to the post method of the requests module. This sends a POST request to the endpoint. The endpoint will provide a prediction for the instances to be scored and return it as a json string to the client.
+Because I activated authentication for my REST endpoint an authentication header with the string Bearer and the primary key which was created when the endpoint was created has to be included. The URI of the endpoint, the header containing authentication data and the json payload should be passed to the post method of the requests module. This sends a POST request to the endpoint. The endpoint will provide a prediction for the instances to be scored and return it as a json string to the client. In the screenshot below you could find a sample input along with the response by the deployed model's endpoint.
 
 ## Screen Recording
 You will find my screencast video under https://...
