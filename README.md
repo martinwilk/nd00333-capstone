@@ -78,6 +78,7 @@ The HyperdriveConfig is submitted to a new experiment and the hyperdrive runs ar
 The deployed model was created by AutoML. To query the endpoint with a sample input, I used the requests module. The sample input has to be provided as a json serialized dict containing the data under a data key. Each instance is another dict in the array which is the value corresponding to the data key. The sample data is serialized using the dumps method of the json module.
 
 Because I activated authentication for my REST endpoint an authentication header with the string Bearer and the primary key which was created when the endpoint was created has to be included. The URI of the endpoint, the header containing authentication data and the json payload should be passed to the post method of the requests module. This sends a POST request to the endpoint. The endpoint will provide a prediction for the instances to be scored and return it as a json string to the client. In the screenshot below you could find a sample input along with the response by the deployed model's endpoint.
+![Model Endpoint Sample]()
 
 ## Screen Recording
 You will find my screencast video under https://...
