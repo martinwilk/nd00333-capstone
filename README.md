@@ -1,31 +1,30 @@
 # Capstone Project for Machine Learning Engineer on Microsoft Azure
 
-This is the final project of my Udacity Machine Learning Engineer nanodegree course. I will compare the performance of an AutoML model to an hyperparameter-optimized XGBoost classification model. For this comparison, I use the red and the white wine quality dataset and concatenate these datasets, so I get a dataset containing information from red and white wines.
+This is the final project of my Udacity Machine Learning Engineer nanodegree course. I will compare the performance of an AutoML model to an hyperparameter-optimized XGBoost classification model. For this comparison, I use the red and the white wine quality dataset and concatenate these datasets, so the resulting dataset contains information from red and white wines.
 
 
 ## Dataset
 
 ### Overview
-In this project I use both wine quality datasets which are available in the UCI Machine Learning data repository. One dataset only contains information about white wines from Portugal, the other dataset consists of red wines. To use both datasets for the classification, I add the wine type as an additional feature to both datasets and concatenate them using the pandas concat method.
+In this project I use both wine quality datasets which are available in the UCI Machine Learning data repository. One dataset only contains information about white wines, the other dataset consists of red wines. To use both datasets for the classification, I add wine type as an additional feature to both datasets and concatenate them using the pandas concat method.
 
 The dataset contains physiochemical measurements like the pH-value, the amount of sugar or the percentage of alcohol for each wine along with a sensory rating ranging from 3 to 9 and the information whether the wine is white or red.
 
-I convert the original ratings to a discrete feature with the values BAD, MEDIUM and GOOD using panda's cut method with the following scheme.
+I convert the original ratings to a discrete feature with the values BAD, MEDIUM and GOOD using panda's cut method with the following scheme:
 
 below 4 => "BAD"
 between 4 and 6 => "MEDIUM"
 7 and above => "GOOD"
 
 ### Task
-The goal of this project is to predict the quality grade (BAD,MEDIUM,GOOD) of a wine. To achieve this, we use the 11 attributes from the dataset and the information about the wine type, which was added to the dataset. As a performance metric the AUC_weighted metric is used.
+The goal of this project is to predict the quality grade (BAD, MEDIUM, GOOD) of a wine. To achieve this, we use the 11 attributes from the dataset and the wine type added to the dataset. As a performance metric the AUC_weighted metric is used.
 
 ### Access
 The data are accessed by searching the key "wine-quality" in the Workspace's dataset attribute. If the dataset is found in the AzureML Studio it is loaded from that resource. Otherwise the datasets for white and red wines are loaded using the from_delimited_files method of the TabularDatasetFactory class. In the clean_data function the TabularDataset are converted into pandas dataframes and the wine type is added as a new feature. Now the dataframes are concatenated and  registered as a TabularDataset in Azure Machine Learning Studio.
 
 ## Automated ML
 To configure an AutoML run, an AutoMLConfig object is created. To start the AutoML run that config object is submitted as an argument of the experiment's submit method. In the following, I will describe my AutoML settings.
-During my AutoML experiment, a timeout is raised after 30 minutes. This is set by the parameter experiment_timeout_minutes of the AutoMLConfig constructor. This is done to limit the training duration.
-The other settings are made in a dict which is passed to the constructor as an keyword argument. Using this dictionary the number of cross validations is set to 3. This means that the dataset is partitioned into three parts. Two of these parts are used to train the model, the other part is used to test the trained model. This procedure is executed three times.
+During my AutoML experiment, a timeout is raised after 30 minutes. This is set by the parameter experiment_timeout_minutes of the AutoMLConfig constructor. This is done to limit the training duration. Using a dictionary which is passed to the AutoML Config constructor, the number of cross validations is set to 3. This means that the dataset is partitioned into three parts. Two of these parts are used to train the model, the other part is used to test the trained model. This procedure is executed three times.
 
 As a primary metric I use the AUC_weighted metric because this metric is less influenced by class imbalance. As you could see in the output of the AutoML run displayed in the jupyter notebook, the dataset is imbalanced, because only 246 out of 6491 wines got a bad rating.  
 
@@ -70,7 +69,7 @@ The HyperdriveConfig is submitted to a new experiment and the hyperdrive runs ar
 
 ### Results
 *TODO*: What are the results you got with your model? What were the parameters of the model? How could you have improved it?
-The hyperparameter-optimized XGBoost classification model achieves a AUC_weighted metric of 0.84... .The optimal hyperparameters are listed in the table showing information about the hyperparameters being tuned above.
+The hyperparameter-optimized XGBoost classification model achieves a AUC_weighted metric of 0.84... .The optimal hyperparameters are displayed in the table showing information about the hyperparameters being tuned above.
 
 The model performance could be improved by choosing a deep learning model as a classifier and using Hyperdrive to tune the hyperparameters of the deep learning algorithm. Another interesting idea is to use another sampling strategy like RandomParameterSampling or a grid search combined with a Policy like the Bandit-Policy. Policies could be used to cancel runs with a smaller performance compared to the highest performance achieved during this experiment.
 The screenshot below shows the RunDetails widget which displays the state of all runs with their parameters and the performance. You could see that, ...
