@@ -1,6 +1,6 @@
 # Capstone Project for Machine Learning Engineer on Microsoft Azure
 
-This is the final project of my Udacity Machine Learning Engineer nanodegree course. I will compare the performance of an AutoML model to an hyperparameter-optimized XGBoost classification model. For this comparison, I use the red and the white wine quality dataset and concatenate these datasets, so the resulting dataset contains information from red and white wines.
+This is the final project of my Udacity Machine Learning Engineer nanodegree course. I will compare the performance of an AutoML model to an hyperparameter-optimized XGBoost classification model. For this comparison, I use the red and the white wine quality dataset and concatenate these datasets, so the resulting dataset contains information from red and white wines. The best model is a VotingEnsemble model created by AutoML.
 
 
 ## Dataset
@@ -35,14 +35,16 @@ Next I enable early stopping to save compute time, if more iterations don't lead
 
 ### Results
 Like in the other Udacity projects, the best model returned by AutoML is a VotingEnsemble model.
-The classification algorithms involved in the VotingEnsemble are XGBoost, LightGBM and logistic regression. The predictions by each model are combined using a optimized set of weights. In the following I will provide some information about the parameters of the classification algorithms XGBoost and LightGBM. XGBoost uses gradient boosting to optimize decision trees. By training new models based on the errors of prior trained models, they obtain a great performance. The parameters of the XGBoost and logistic regression models are optimized during the training process.  More on the exact parameters used by the VotingEnsemble could be found in the jupyter notebook. The best model has an AUC_weighted of 0.8___.
+The classification algorithms involved in the VotingEnsemble are XGBoost, LightGBM and logistic regression. The predictions by each model are combined using a optimized set of weights. In the following I will provide some information about the parameters of the classification algorithms XGBoost and LightGBM. XGBoost uses gradient boosting to optimize decision trees. By training new models based on the errors of prior trained models, they obtain a great performance. The parameters of the XGBoost and logistic regression models are optimized during the training process.  More on the exact parameters used by the VotingEnsemble could be found in the jupyter notebook. The AUC_weighted of the VotingEnsemble is 0.87556.
 
-![Screenshot Widget]()
-![best_model_run]()
+Below you could find the output of the RunDetails widget. It provides useful information about the state of the child runs, the achieved performance and the duration of all completed runs.
+![Screenshot Widget](images/automl_run_details.png)
 
-An interesting improvement to the project is to enable the training of deep learning models just to test whether they could outperform the VotingEnsemble model. Another room of improvement deliver the parameters blocked models or allowed models or a manual feature engineering on the dataset.
+![best_model_run](images/automl_best_run.png)
+![best_model](images/automl_best_model.png)
+In the screenshot above the best AutoML run is displayed with its Run ID and other information. The second screenshot shows information about the model trained by AutoML like the type of model (Voting Ensemble), the achieved AUC_weighted and the registration status.
 
-*TODO* Remember to provide screenshots of the `RunDetails` widget as well as a screenshot of the best model trained with it's parameters.
+An interesting improvement to the project would be to enable the training of deep learning models just to test whether they could outperform the VotingEnsemble model. Another room of improvement deliver the parameters blocked models or allowed models or a manual feature engineering on the dataset.
 
 ## Hyperparameter Tuning
 I chose the XGBoost classification algorithm to perform the outlined task, because these models often have good performance. XGBoost is an abbreviation for eXtreme Gradient Boosting. Gradient Boosting is an ensemble technique. This means that you aggregate the predictions from so-called base learners (here: decision trees). Because of the aggregation of their predictions the error rate will be reduced compared to the error rate from a single decision tree.
@@ -51,12 +53,9 @@ Another positive property of XGBoost is its speed.
 The XGBoost classification algorithm has many important hyperparameters like the learning rate, sampling size and the parameters for the decision tree like the maximum depth or a lower bound for the loss reduction incurred by a new split of the decision tree. During my experiments, I will optimize the four hyperparameters below:
 |Parameter | description | range | optimal value |
 |----------|------------ |-------|------------ |
-|Maximum Depth | depth of decision tree | random integer between 3 and 8 | 6 |
-|----------|------------ |-------| ----------- |
-| alpha | L1 regularization on weights of XGBoost | random between 0.1 and 10 |1.0 |
-|----------|------------ |-------| ------------ |
-| Gamma | minimal split loss required for next split| between 0.01 and 5 | 0.28 |
-|----------|------------ |-------| ------------- |
+|Maximum Depth | depth of decision tree | random integer between 3 and 8 | 7 |
+| alpha | L1 regularization on weights of XGBoost | random between 0.1 and 10 |0.2525 |
+| Gamma | minimal split loss required for next split| between 0.01 and 5 | 0.01 |
 | Learning rate | learning rate used to optimize weights | random between 0.05 and 0.25 | 0.05 |
 |----------|------------ |-------| -------------- |
 
@@ -68,17 +67,17 @@ I use BayesianParameterSampling in my experiments because BayesianParameterSampl
 The HyperdriveConfig is submitted to a new experiment and the hyperdrive runs are executed automatically.   
 
 ### Results
-*TODO*: What are the results you got with your model? What were the parameters of the model? How could you have improved it?
-The hyperparameter-optimized XGBoost classification model achieves a AUC_weighted metric of 0.84... .The optimal hyperparameters are displayed in the table showing information about the hyperparameters being tuned above.
+
+The hyperparameter-optimized XGBoost classification model achieves a AUC_weighted metric of 0.8689. .The optimal hyperparameters are displayed in the table showing information about the hyperparameters being tuned above.
 
 The model performance could be improved by choosing a deep learning model as a classifier and using Hyperdrive to tune the hyperparameters of the deep learning algorithm. Another interesting idea is to use another sampling strategy like RandomParameterSampling or a grid search combined with a Policy like the Bandit-Policy. Policies could be used to cancel runs with a smaller performance compared to the highest performance achieved during this experiment.
 The screenshot below shows the RunDetails widget which displays the state of all runs with their parameters and the performance. You could see that, ...
 
-![Screenshot Widget HD]()
-![best_model_run_hd]()
+![Screenshot Widget HD](images/hyperopt_run_details1.png)
+![Screenshot Widget HD2](images/hyperopt_run_details2.png)
+![best_model_run_hd](images/hyperopt_best_run.png)
 In the screenshot above the RunId of the best run is displayed. You could find the parameters of the best model in the screenshot below.
 
-*TODO* Remember to provide screenshots of the `RunDetails` widget as well as a screenshot of the best model trained with it's parameters.
 
 ## Model Deployment
 The best model is the AutoML model / the hyperparameter optimized XGBoost model. I deployed the best model. To query the endpoint with a sample input, I use the requests module. The sample input has to be provided as a json serialized dict containing the data under the key named "data". Each instance is another dict in the array which is the value corresponding to the data key. The sample data is serialized using the dumps method of the json module.
