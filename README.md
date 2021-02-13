@@ -34,30 +34,7 @@ Next I enable early stopping to save compute time, if more iterations don't lead
 
 
 ### Results
-Like in the other Udacity projects, the best model returned by AutoML is a VotingEnsemble model.
-The classification algorithms involved in the VotingEnsemble are XGBoost and LightGBM. The Voting Ensemble is a combination of multiple XGBoost and LightGBM models with different parameters. In the following I will provide some information about the parameters of the classification algorithms XGBoost and LightGBM. XGBoost uses gradient boosting to optimize decision trees. Training models on the errors of prior trained models, could lead to a superior performance because errors made by other models are corrected by another model. The parameters of the XGBoost and logistic regression models are optimized during the training process.
-
- Here you could find some information about the base models and their parameters of the Voting Ensemble model trained by AutoML.
-
- The Voting Ensemble consists of nine different base models and the final prediction is obtained via a weighted voting principle. The weights used in the voting process are displayed in the screenshot below. For each base model the data are transformed before the model is trained using different types of data transformers like StandardScaler, TruncatedSVD or SparseNormalizer.
-
- ![automl_param_overview](images/automl_model_param_overview.png)
-
- The first model involved in the Voting Ensemble is a XGBoost model with a StandardScaler as a preprocessing step. The parameters of this model are printed in the screenshot below.
-
-![automl_param_2](images/automl_model_param2.png)
-![automl_param_3](images/automl_model_param3.png)
-![automl_param_4](images/automl_model_param4.png)
-![automl_param_5](images/automl_model_param5.png)
-![automl_param_6](images/automl_model_param6.png)
-![automl_param_7](images/automl_model_param7.png)
-![automl_param_8](images/automl_model_param8.png)
-![automl_param_9](images/automl_model_param9.png)
-![automl_param_10](images/automl_model_param10.png)
-
-
-
-The VotingEnsemble's AUC_weighted is 0.87556.
+Like in the other Udacity projects, the best model returned by AutoML is a Voting Ensemble model.
 
 Below you could find the output of the RunDetails widget. It provides useful information about the state of the child runs, the achieved performance and the duration of all completed runs.
 
@@ -69,11 +46,61 @@ Below you could find the output of the RunDetails widget. It provides useful inf
 
 In the screenshot above the best AutoML run is displayed with its Run ID and other information. The second screenshot shows information about the model trained by AutoML like the type of model (Voting Ensemble), the achieved AUC_weighted and the registration status.
 
+The classification algorithms involved in the VotingEnsemble are XGBoost and LightGBM. The Voting Ensemble is a combination of multiple XGBoost and LightGBM models with different parameters. In the following I will provide some information about the parameters of the classification algorithms XGBoost and LightGBM. XGBoost uses gradient boosting to optimize decision trees. Training models on the errors of prior trained models, could lead to a superior performance because errors made by other models are corrected by another model. The parameters of the XGBoost and logistic regression models are optimized during the training process.
+
+ Here you could find some information about the base models and their parameters of the Voting Ensemble model trained by AutoML.
+
+ The Voting Ensemble consists of nine different base models and the final prediction is obtained via a weighted voting principle. The weights used in the voting process are displayed in the screenshot below. For each base model the data are transformed before the model is trained using different types of data transformers like StandardScaler, TruncatedSVD or SparseNormalizer.
+
+ ![automl_param_overview](images/automl_model_param_overview.png)
+
+ The first model involved in the Voting Ensemble is a XGBoost model with a StandardScaler as a preprocessing step. The parameters of this model are printed in the screenshot below.
+
+![automl_param_2](images/automl_model_param2.png)
+
+The next base model of the Voting Ensemble is another XGBoost model which was trained on other parameters compared to the model described above. Its parameters are displayed in the screenshot below. As you can clearly see, this model uses another value for the learning rate (0.4 compared to 0.05) and uses a higher regularization strength for the weights.
+
+![automl_param_3](images/automl_model_param3.png)
+
+The LightGBM model, which also plays a role in the Voting Ensemble, is also based on trees. like XGBoost, but has a higher computational efficiency. The optimal parameters of this model are listed in the screenshot below. As a preprocessing step, the data is scaled using a normal distribution.
+
+![automl_param_4](images/automl_model_param4.png)
+
+Another XGBoost model involved in the Voting Ensemble uses a learning rate of 0.3 and a less strict regularization of weights compared to the XGBoost Model with the ID 34.
+The values for all parameters for this model are provided in the screenshot below. Like the models described above the data is standardized before the models are fitted.
+
+![automl_param_5](images/automl_model_param5.png)
+
+The model with the ID 63 is also a XGBoost model with a quite high learning rate of 0.5. In contrast to the model described above, the whole training dataset is used to train the XGBoost model, because the subsample parameter is set to 1. You could find the complete parameter set in the screenshot below.
+
+
+![automl_param_6](images/automl_model_param6.png)
+
+The next base model is also a XGBBoost classifier with the parameters printed below. As a preprocessing step, the data is transformed using a TruncatedSVD algorithm.
+
+![automl_param_7](images/automl_model_param7.png)
+
+The screenshot below show the parameters of another base model involved in the Voting Ensemble. It uses the classification algorithm XGBoost and the data is normalized using a SparseNormalizer before the training process.
+
+![automl_param_8](images/automl_model_param8.png)
+
+The next model involved in the Voting Ensemble is also a XGBoost classifier. The SparseNormalizer is used to normalize the data using the maximum norm. The parameters of the preprocessing step and the hyperparameters of the XGBoost classifier could be obtained from the screenshot below.
+
+![automl_param_9](images/automl_model_param9.png)
+
+The last model which is part of the Voting Ensemble is another XGBoost model with a L1 regularization of the XGBoost's weights. The data is preprocessed using a TruncatedSVD algorithm. All parameters of this model are listed below.
+
+![automl_param_10](images/automl_model_param10.png)
+
+All predictions of the base models described above are evaluated and averaged using the set of weights which are displayed in the first screenshot showing the PrefittedSoftVotingClassifier.
+
+So the Voting Ensemble achieves a AUC_weighted of 0.87556.
+
 An interesting improvement to the project would be to enable the training of deep learning models just to test whether they could outperform the VotingEnsemble model. Another room of improvement deliver the parameters blocked models or allowed models or a manual feature engineering on the dataset.
 
-In the
 
 ## Hyperparameter Tuning
+
 I chose the XGBoost classification algorithm to perform the outlined task, because these models often have good performance. XGBoost is an abbreviation for eXtreme Gradient Boosting. Gradient Boosting is an ensemble technique. This means that you aggregate the predictions from so-called base learners (here: decision trees). Because of the aggregation of their predictions the error rate will be reduced compared to the error rate from a single decision tree.
 Another positive property of XGBoost is its speed.
 
@@ -94,7 +121,7 @@ The HyperdriveConfig is submitted to a new experiment and the hyperdrive runs ar
 
 ### Results
 
-The hyperparameter-optimized XGBoost classification model achieves a AUC_weighted metric of 0.8689. .The optimal hyperparameters are displayed in the table showing information about the hyperparameters being tuned above.
+The hyperparameter-optimized XGBoost classification model achieves a AUC_weighted metric of 0.8689. The optimal hyperparameters are displayed in the table showing information about the hyperparameters being tuned above.
 
 The model performance could be improved by choosing a deep learning model as a classifier and using Hyperdrive to tune the hyperparameters of the deep learning algorithm. Another interesting idea is to use another sampling strategy like RandomParameterSampling or a grid search combined with a Policy like the Bandit-Policy. Policies could be used to cancel runs with a smaller performance compared to the highest performance achieved during this experiment.
 The screenshots below shows the RunDetails widget which displays the state of all runs with their parameters and the performance. You could see that the run is completed and took about 43 min to complete.
@@ -109,9 +136,12 @@ The screenshot below shows some information about the hyperdrive runs like the r
 ![best_model_hd_param](images/hyperopt_best_param.png)
 
 ## Model Deployment
-The best model is the AutoML model which I have deployed as a Azure Container Instance (ACI) with authentication. To query the endpoint of the best model with a sample input, I use the requests module. The sample input has to be provided as a json serialized dict containing the data under the key named "data". Each instance is another dict in the array which is the value corresponding to the data key. The sample data is serialized using the dumps method of the json module.
 
-Because I activated authentication for my REST endpoint an authentication header with the string Bearer and the primary key which was created when the endpoint was created has to be included. The URI of the endpoint, the header containing authentication data and the json payload should be passed to the post method of the requests module. This sends a POST request to the endpoint. The endpoint will provide a prediction for the instances to be scored and return it as a json string to the client. In the screenshot below you could find a sample input along with the response by the deployed model's endpoint. The code and the response by the model's REST endpoint is displayed in the screenshot below.
+During my experiment the AutoML model has a better performance compared to the hyperparameter-tuned XGBoost model. So I deployed the model created by AutoML as a Azure Container Instance (ACI) with enabled authentication.
+
+To query the endpoint of the best model with a sample input, I use the requests module. The sample input has to be provided as a json serialized dict containing the data under the key named "data". Each instance is another dict in the array which is the value corresponding to the data key. The sample data is serialized using the dumps method of the json module.
+
+Because I have activated authentication for my REST endpoint an authentication header with the string Bearer and the primary key which was created when the endpoint was created has to be included. The URI of the endpoint, the header containing authentication data and the json payload should be passed to the post method of the requests module. This sends a POST request to the endpoint. The endpoint will provide a prediction for the instances to be scored and return it as a json string to the client. In the screenshot below you could find a sample input along with the response by the deployed model's endpoint. The code and the response by the model's REST endpoint is displayed in the screenshot below.
 
 ![Model Endpoint Sample](images/automl_rest_sample.png)
 
