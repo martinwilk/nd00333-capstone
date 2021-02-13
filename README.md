@@ -133,7 +133,7 @@ The screenshots below shows the RunDetails widget which displays the state of al
 
 The screenshot below shows some information about the hyperdrive runs like the run id, the metric and the values for all hyperparameters in this run. The hyperdrive runs are sorted by the performance, so the first row displays the best hyperdrive run. The hyper parameters of the best model can be found below.
 
-![best_model_hd_param](images/hyperopt_best_param.png)
+![best_model_hd_param](images/hyperparam_best_param.png)
 
 ## Model Deployment
 
