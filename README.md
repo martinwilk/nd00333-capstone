@@ -153,4 +153,4 @@ Another improvement for this project would be the optimization of the hyperparam
 As you could see in the output of the AutoML run the wine dataset is imbalanced. Using a resampling technique like SMOTE would help to improve the classifiers performance because there is no minority class in the resampled sample.
 
 ## Screen Recording
-You will find my screencast video under https://...
+You will find my screencast video under https://https://youtu.be/ueKnmviMXJM
